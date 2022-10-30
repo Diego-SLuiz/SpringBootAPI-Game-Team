@@ -32,11 +32,6 @@ build/
 ### VS Code ###
 .vscode/
 
-/.idea
-/.mvn
-*.class
-*.jar
-
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,java,maven
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,java,maven
 
@@ -199,3 +194,4 @@ buildNumber.properties
 .classpath
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij,java,maven
+

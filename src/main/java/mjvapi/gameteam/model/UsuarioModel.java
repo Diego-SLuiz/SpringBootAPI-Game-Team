@@ -21,8 +21,8 @@ public class UsuarioModel {
     @Column(name = "senha", length = 50, nullable = false)
     private String senha;
 
-    @Column(name = "dataRegistro", nullable = false)
-    private LocalDate dataRegistro;
+    @Column(name = "registro", nullable = false)
+    private LocalDate registro;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_id")
@@ -30,10 +30,14 @@ public class UsuarioModel {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_id")
-    private List<PedidoModel> listaPedidos = new ArrayList<PedidoModel>();
+    private List<PedidoModel> pedidos = new ArrayList<PedidoModel>();
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNome() {
@@ -60,12 +64,12 @@ public class UsuarioModel {
         this.senha = senha;
     }
 
-    public LocalDate getDataRegistro() {
-        return dataRegistro;
+    public LocalDate getRegistro() {
+        return registro;
     }
 
-    public void setDataRegistro(LocalDate dataRegistro) {
-        this.dataRegistro = dataRegistro;
+    public void setRegistro(LocalDate registro) {
+        this.registro = registro;
     }
 
     public EnderecoModel getEndereco() {
@@ -76,11 +80,11 @@ public class UsuarioModel {
         this.endereco = endereco;
     }
 
-    public List<PedidoModel> getListaPedidos() {
-        return listaPedidos;
+    public List<PedidoModel> getPedidos() {
+        return pedidos;
     }
 
-    public void setListaPedidos(List<PedidoModel> listaPedidos) {
-        this.listaPedidos = listaPedidos;
+    public void setPedidos(List<PedidoModel> pedidos) {
+        this.pedidos = pedidos;
     }
 }

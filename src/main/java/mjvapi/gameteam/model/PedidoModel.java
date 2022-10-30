@@ -26,10 +26,14 @@ public class PedidoModel {
 
     @OneToMany
     @JoinColumn(name = "pedido_id")
-    private List<PedidoItem> listaCestas = new ArrayList<PedidoItem>();
+    private List<ItemModel> itens = new ArrayList<ItemModel>();
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public LocalDateTime getData() {
@@ -56,11 +60,11 @@ public class PedidoModel {
         this.status = status;
     }
 
-    public List<PedidoItem> getListaCestas() {
-        return listaCestas;
+    public List<ItemModel> getItens() {
+        return itens;
     }
 
-    public void setListaCestas(List<PedidoItem> listaCestas) {
-        this.listaCestas = listaCestas;
+    public void setItens(List<ItemModel> itens) {
+        this.itens = itens;
     }
 }

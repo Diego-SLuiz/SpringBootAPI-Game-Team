@@ -3,16 +3,13 @@ package mjvapi.gameteam.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "pedido_item")
-public class PedidoItem {
+@Table(name = "item")
+public class ItemModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "valor", nullable = false)
-    private Double valor;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "produto_id")
     private ProdutoModel produto;
 
@@ -20,12 +17,8 @@ public class PedidoItem {
         return id;
     }
 
-    public Double getValor() {
-        return valor;
-    }
-
-    public void setValor(Double valor) {
-        this.valor = valor;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public ProdutoModel getProduto() {

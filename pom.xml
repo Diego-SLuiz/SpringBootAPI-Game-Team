@@ -12,7 +12,7 @@
 	<artifactId>game-team</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>game-team</name>
-	<description>Projeto final de conclusão de curso MJV Academy</description>
+	<description>Trabalho de conclusão de curso MJV Academy</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
