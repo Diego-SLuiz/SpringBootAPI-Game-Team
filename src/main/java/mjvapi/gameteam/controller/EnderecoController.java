@@ -1,5 +1,7 @@
 package mjvapi.gameteam.controller;
 
+import mjvapi.gameteam.dto.endereco.EnderecoRequestBody;
+import mjvapi.gameteam.dto.endereco.EnderecoResponseBody;
 import mjvapi.gameteam.model.EnderecoModel;
 import mjvapi.gameteam.service.EnderecoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +31,13 @@ public class EnderecoController {
     }
 
     @PostMapping("/novo")
-    public void novoEndereco(@RequestBody EnderecoModel enderecoBody) {
-        enderecoService.novoEndereco(enderecoBody);
+    public EnderecoResponseBody novoEndereco(@RequestBody EnderecoRequestBody enderecoRequest) {
+        return enderecoService.novoEndereco(enderecoRequest);
     }
 
     @PatchMapping("/{id}/atualizar")
-    public void atualizarEndereco(@PathVariable(name = "id") Long id, @RequestBody EnderecoModel enderecoBody) {
-        enderecoService.atualizarEndereco(id, enderecoBody);
+    public EnderecoResponseBody atualizarEndereco(@PathVariable(name = "id") Long id, @RequestBody EnderecoRequestBody enderecoRequest) {
+        return enderecoService.atualizarEndereco(id, enderecoRequest);
     }
 
 }

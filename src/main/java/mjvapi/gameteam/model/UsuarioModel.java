@@ -87,4 +87,5 @@ public class UsuarioModel {
     public void setPedidos(List<PedidoModel> pedidos) {
         this.pedidos = pedidos;
     }
+
 }

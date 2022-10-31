@@ -1,6 +1,7 @@
 package mjvapi.gameteam.controller;
 
 import mjvapi.gameteam.dto.usuario.UsuarioRequestBody;
+import mjvapi.gameteam.dto.usuario.UsuarioResponseBody;
 import mjvapi.gameteam.model.UsuarioModel;
 import mjvapi.gameteam.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +31,13 @@ public class UsuarioController {
     }
 
     @PostMapping("/novo")
-    public void novoUsuario(@RequestBody UsuarioModel usuarioBody) {
-        usuarioService.novoUsuario(usuarioBody);
+    public UsuarioResponseBody novoUsuario(@RequestBody UsuarioRequestBody usuarioRequest) {
+        return usuarioService.novoUsuario(usuarioRequest);
     }
 
     @PatchMapping("/{id}/atualizar")
-    public void atualizarUsuario(@PathVariable(name = "id") Long id, @RequestBody UsuarioRequestBody usuarioBody) {
-        usuarioService.atualizarUsuario(id, usuarioBody);
+    public UsuarioResponseBody atualizarUsuario(@PathVariable(name = "id") Long id, @RequestBody UsuarioRequestBody usuarioRequest) {
+        return usuarioService.atualizarUsuario(id, usuarioRequest);
     }
 
 }

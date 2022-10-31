@@ -1,6 +1,7 @@
 package mjvapi.gameteam.service;
 
 import mjvapi.gameteam.dto.usuario.UsuarioRequestBody;
+import mjvapi.gameteam.dto.usuario.UsuarioResponseBody;
 import mjvapi.gameteam.model.EnderecoModel;
 import mjvapi.gameteam.model.UsuarioModel;
 import mjvapi.gameteam.repository.EnderecoRepository;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -25,42 +27,61 @@ public class UsuarioService {
     }
 
     public UsuarioModel buscarUsuario(Long id) {
-        return usuarioRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        return usuarioRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Usuario {%s} não encontrado", id)));
     }
 
-    public void salvarUsuario(UsuarioModel usuario) {
-        usuarioRepository.save(usuario);
+    public UsuarioResponseBody salvarUsuario(UsuarioModel usuario) {
+        return new UsuarioResponseBody(usuarioRepository.save(usuario));
     }
 
     public void deletarUsuario(Long id) {
         usuarioRepository.deleteById(id);
     }
 
-    public void novoUsuario(UsuarioModel usuarioBody) {
-        salvarUsuario(usuarioBody);
-    }
+    public UsuarioResponseBody novoUsuario(UsuarioRequestBody usuarioRequest) {
+        UsuarioModel usuario = new UsuarioModel();
 
-    public void atualizarUsuario(Long id, UsuarioRequestBody usuarioBody) {
-        UsuarioModel usuario = buscarUsuario(id);
-
-        if (usuarioBody.getNome() != null) {
-            usuario.setNome(usuarioBody.getNome());
+        if (usuarioRequest.getNome() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O campo \"nome\" não pode ser nulo");
+        }
+        if (usuarioRequest.getEmail() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O campo \"email\" não pode ser nulo");
+        }
+        if (usuarioRequest.getSenha() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O campo \"senha\" não pode ser nulo");
         }
 
-        if (usuarioBody.getEmail() != null) {
-            usuario.setEmail(usuarioBody.getEmail());
-        }
+        usuario.setNome(usuarioRequest.getNome());
+        usuario.setEmail(usuarioRequest.getEmail());
+        usuario.setSenha(usuarioRequest.getSenha());
+        usuario.setRegistro(LocalDate.now());
 
-        if (usuarioBody.getSenha() != null) {
-            usuario.setSenha(usuarioBody.getSenha());
-        }
-
-        if (usuarioBody.getEndereco() != null) {
-            EnderecoModel endereco = enderecoService.buscarEndereco(usuarioBody.getEndereco());
+        if (usuarioRequest.getEndereco() != null) {
+            EnderecoModel endereco = enderecoService.buscarEndereco(usuarioRequest.getEndereco());
             usuario.setEndereco(endereco);
         }
 
-        salvarUsuario(usuario);
+        return salvarUsuario(usuario);
+    }
+
+    public UsuarioResponseBody atualizarUsuario(Long id, UsuarioRequestBody usuarioRequest) {
+        UsuarioModel usuario = buscarUsuario(id);
+
+        if (usuarioRequest.getNome() != null) {
+            usuario.setNome(usuarioRequest.getNome());
+        }
+        if (usuarioRequest.getEmail() != null) {
+            usuario.setEmail(usuarioRequest.getEmail());
+        }
+        if (usuarioRequest.getSenha() != null) {
+            usuario.setSenha(usuarioRequest.getSenha());
+        }
+        if (usuarioRequest.getEndereco() != null) {
+            EnderecoModel endereco = enderecoService.buscarEndereco(usuarioRequest.getEndereco());
+            usuario.setEndereco(endereco);
+        }
+
+        return salvarUsuario(usuario);
     }
 
 }

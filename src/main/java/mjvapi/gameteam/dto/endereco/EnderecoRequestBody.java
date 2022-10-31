@@ -1,45 +1,14 @@
-package mjvapi.gameteam.model;
+package mjvapi.gameteam.dto.endereco;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "endereco")
-public class EnderecoModel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "pais", length = 50, nullable = false)
+public class EnderecoRequestBody {
     private String pais;
-
-    @Column(name = "cidade", length = 50, nullable = false)
     private String cidade;
-
-    @Column(name = "logradouro", length = 50, nullable = false)
     private String logradouro;
-
-    @Column(name = "bairro", length = 50, nullable = false)
     private String bairro;
-
-    @Column(name = "complemento", length = 50, nullable = true)
     private String complemento;
-
-    @Column(name = "cep", length = 8, nullable = false)
     private String cep;
-
-    @Column(name = "numero", length = 8, nullable = false)
     private String numero;
-
-    @Column(name = "uf", length = 2, nullable = false)
     private String uf;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getPais() {
         return pais;
