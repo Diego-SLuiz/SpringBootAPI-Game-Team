@@ -1,10 +1,10 @@
 package mjvapi.gameteam.service;
 
 import mjvapi.gameteam.dto.usuario.UsuarioRequestBody;
-import mjvapi.gameteam.dto.usuario.UsuarioResponseBody;
+import mjvapi.gameteam.model.BibliotecaModel;
 import mjvapi.gameteam.model.EnderecoModel;
+import mjvapi.gameteam.model.PedidoModel;
 import mjvapi.gameteam.model.UsuarioModel;
-import mjvapi.gameteam.repository.EnderecoRepository;
 import mjvapi.gameteam.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +22,12 @@ public class UsuarioService {
     @Autowired
     private EnderecoService enderecoService;
 
+    @Autowired
+    private BibliotecaService bibliotecaService;
+
+    @Autowired
+    private PedidoService pedidoService;
+
     public List<UsuarioModel> buscarTodos() {
         return usuarioRepository.findAll();
     }
@@ -30,15 +36,15 @@ public class UsuarioService {
         return usuarioRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Usuario {%s} não encontrado", id)));
     }
 
-    public UsuarioResponseBody salvarUsuario(UsuarioModel usuario) {
-        return new UsuarioResponseBody(usuarioRepository.save(usuario));
+    public void salvarUsuario(UsuarioModel usuario) {
+        usuarioRepository.save(usuario);
     }
 
     public void deletarUsuario(Long id) {
         usuarioRepository.deleteById(id);
     }
 
-    public UsuarioResponseBody novoUsuario(UsuarioRequestBody usuarioRequest) {
+    public void novoUsuario(UsuarioRequestBody usuarioRequest) {
         UsuarioModel usuario = new UsuarioModel();
 
         if (usuarioRequest.getNome() == null) {
@@ -61,10 +67,10 @@ public class UsuarioService {
             usuario.setEndereco(endereco);
         }
 
-        return salvarUsuario(usuario);
+        salvarUsuario(usuario);
     }
 
-    public UsuarioResponseBody atualizarUsuario(Long id, UsuarioRequestBody usuarioRequest) {
+    public void atualizarUsuario(Long id, UsuarioRequestBody usuarioRequest) {
         UsuarioModel usuario = buscarUsuario(id);
 
         if (usuarioRequest.getNome() != null) {
@@ -80,8 +86,36 @@ public class UsuarioService {
             EnderecoModel endereco = enderecoService.buscarEndereco(usuarioRequest.getEndereco());
             usuario.setEndereco(endereco);
         }
+        if (usuarioRequest.getBiblioteca() != null) {
+            BibliotecaModel biblioteca = bibliotecaService.buscarBiblioteca(usuarioRequest.getBiblioteca());
+            usuario.setBiblioteca(biblioteca);
+        }
 
-        return salvarUsuario(usuario);
+        salvarUsuario(usuario);
+    }
+
+    public void adicionarPedido(Long id, Long pedidoId) {
+        UsuarioModel usuario = buscarUsuario(id);
+        PedidoModel pedido = pedidoService.buscarPedido(pedidoId);
+
+        if (usuario.getPedidos().contains(pedido)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Pedido {%s} já existe para o Usuario {%s}", pedidoId, id));
+        }
+
+        usuario.getPedidos().add(pedido);
+        salvarUsuario(usuario);
+    }
+
+    public void removerPedido(Long id, Long pedidoId) {
+        UsuarioModel usuario = buscarUsuario(id);
+        PedidoModel pedido = pedidoService.buscarPedido(pedidoId);
+
+        if (!usuario.getPedidos().contains(pedido)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Pedido {%s} não existe para o Usuario {%s}", pedidoId, id));
+        }
+
+        usuario.getPedidos().remove(pedido);
+        salvarUsuario(usuario);
     }
 
 }

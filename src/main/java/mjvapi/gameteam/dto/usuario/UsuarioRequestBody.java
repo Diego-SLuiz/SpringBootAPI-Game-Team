@@ -5,6 +5,7 @@ public class UsuarioRequestBody {
     private String email;
     private String senha;
     private Long endereco;
+    private Long biblioteca;
 
     public String getNome() {
         return nome;
@@ -36,6 +37,14 @@ public class UsuarioRequestBody {
 
     public void setEndereco(Long endereco) {
         this.endereco = endereco;
+    }
+
+    public Long getBiblioteca() {
+        return biblioteca;
+    }
+
+    public void setBiblioteca(Long biblioteca) {
+        this.biblioteca = biblioteca;
     }
 
 }

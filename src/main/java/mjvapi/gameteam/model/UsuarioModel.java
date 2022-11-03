@@ -28,6 +28,10 @@ public class UsuarioModel {
     @JoinColumn(name = "endereco_id")
     private EnderecoModel endereco;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "biblioteca_id")
+    private BibliotecaModel biblioteca;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "usuario_id")
     private List<PedidoModel> pedidos = new ArrayList<PedidoModel>();
@@ -78,6 +82,14 @@ public class UsuarioModel {
 
     public void setEndereco(EnderecoModel endereco) {
         this.endereco = endereco;
+    }
+
+    public BibliotecaModel getBiblioteca() {
+        return biblioteca;
+    }
+
+    public void setBiblioteca(BibliotecaModel biblioteca) {
+        this.biblioteca = biblioteca;
     }
 
     public List<PedidoModel> getPedidos() {

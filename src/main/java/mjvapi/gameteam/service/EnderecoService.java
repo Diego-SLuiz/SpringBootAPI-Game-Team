@@ -24,15 +24,15 @@ public class EnderecoService {
         return enderecoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Endereco {%s} não encontrado",  id)));
     }
 
-    public EnderecoResponseBody salvarEndereco(EnderecoModel endereco) {
-        return new EnderecoResponseBody(enderecoRepository.save(endereco));
+    public void salvarEndereco(EnderecoModel endereco) {
+        enderecoRepository.save(endereco);
     }
 
     public void deletarEndereco(Long id) {
         enderecoRepository.deleteById(id);
     }
 
-    public EnderecoResponseBody novoEndereco(EnderecoRequestBody enderecoRequest) {
+    public void novoEndereco(EnderecoRequestBody enderecoRequest) {
         EnderecoModel endereco = new EnderecoModel();
 
         if (enderecoRequest.getPais() == null) {
@@ -66,10 +66,10 @@ public class EnderecoService {
         endereco.setNumero(enderecoRequest.getNumero());
         endereco.setUf(enderecoRequest.getUf());
 
-        return salvarEndereco(endereco);
+        salvarEndereco(endereco);
     }
 
-    public EnderecoResponseBody atualizarEndereco(Long id, EnderecoRequestBody enderecoRequest) {
+    public void atualizarEndereco(Long id, EnderecoRequestBody enderecoRequest) {
         EnderecoModel endereco = buscarEndereco(id);
 
         if (enderecoRequest.getPais() != null) {
@@ -97,7 +97,7 @@ public class EnderecoService {
             endereco.setUf(enderecoRequest.getUf());
         }
 
-        return salvarEndereco(endereco);
+        salvarEndereco(endereco);
     }
 
 }

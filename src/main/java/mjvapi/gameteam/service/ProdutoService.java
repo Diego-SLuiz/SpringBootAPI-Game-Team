@@ -15,9 +15,6 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    @Autowired
-    private PedidoService pedidoService;
-
     public List<ProdutoModel> buscarTodos() {
         return produtoRepository.findAll();
     }
@@ -38,7 +35,7 @@ public class ProdutoService {
         salvarProduto(produtoBody);
     }
 
-    public ProdutoModel atualizarProduto(Long id, ProdutoModel produtoBody) {
+    public void atualizarProduto(Long id, ProdutoModel produtoBody) {
         ProdutoModel produto = buscarProduto(id);
 
         if (produtoBody.getNome() != null) {
@@ -57,7 +54,7 @@ public class ProdutoService {
             produto.setValor(produtoBody.getValor());
         }
 
-        return produtoRepository.save(produto);
+        produtoRepository.save(produto);
     }
 
 }

@@ -20,11 +20,7 @@ public class PedidoService {
     private PedidoRepository pedidoRepository;
 
     @Autowired
-    private ItemRepository itemRepository;
-
-    @Autowired
-    private UsuarioService usuarioService;
-
+    private ItemService itemService;
 
     public List<PedidoModel> buscarTodos() {
         return pedidoRepository.findAll();
@@ -42,24 +38,20 @@ public class PedidoService {
         pedidoRepository.deleteById(id);
     }
 
-    public void novoPedido(Long usuarioId) {
+    public void novoPedido() {
         PedidoModel pedido = new PedidoModel();
         pedido.setValor(0.0);
         pedido.setData(LocalDateTime.now());
         pedido.setStatus(StatusPedido.PENDENTE);
-
-        UsuarioModel usuario = usuarioService.buscarUsuario(usuarioId);
-        usuario.getPedidos().add(pedido);
-
-        usuarioService.salvarUsuario(usuario);
+        salvarPedido(pedido);
     }
 
     public void adicionarItemAoPedido(Long id, Long itemId) {
         PedidoModel pedido = buscarPedido(id);
-        ItemModel item = itemRepository.findById(itemId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        ItemModel item = itemService.buscarItem(itemId);
 
         if (pedido.getItens().contains(item)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Item {%s} já existe no Pedido {%s}", itemId, id));
         }
 
         pedido.getItens().add(item);
@@ -69,10 +61,10 @@ public class PedidoService {
 
     public void removerItemDoPedido(Long id, Long itemId) {
         PedidoModel pedido = buscarPedido(id);
-        ItemModel item = itemRepository.findById(itemId).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        ItemModel item = itemService.buscarItem(itemId);
 
         if (!pedido.getItens().contains(item)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Item {%s} não existe no Pedido {%s}", itemId, id));
         }
 
         pedido.getItens().remove(item);

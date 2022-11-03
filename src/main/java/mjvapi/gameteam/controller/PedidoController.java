@@ -30,8 +30,8 @@ public class PedidoController {
     }
 
     @PostMapping("/novo")
-    public void novoPedido(@RequestParam(name = "usuario") Long usuarioId) {
-        pedidoService.novoPedido(usuarioId);
+    public void novoPedido() {
+        pedidoService.novoPedido();
     }
 
     @PatchMapping("/{id}/adicionar")

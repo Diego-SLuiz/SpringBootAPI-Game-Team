@@ -1,7 +1,6 @@
 package mjvapi.gameteam.service;
 
 import mjvapi.gameteam.model.ItemModel;
-import mjvapi.gameteam.model.PedidoModel;
 import mjvapi.gameteam.model.ProdutoModel;
 import mjvapi.gameteam.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,6 @@ public class ItemService {
     @Autowired
     private ProdutoService produtoService;
 
-    @Autowired
-    private PedidoService pedidoService;
-
     public List<ItemModel> buscarTodos() {
         return itemRepository.findAll();
     }
@@ -38,15 +34,9 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
-    public void novoItem(Long produtoId, Long pedidoId) {
-        ProdutoModel produto = produtoService.buscarProduto(produtoId);
-        PedidoModel pedido = pedidoService.buscarPedido(pedidoId);
-
+    public void novoItem() {
         ItemModel item = new ItemModel();
-        item.setProduto(produto);
-        pedido.getItens().add(item);
         salvarItem(item);
-        pedidoService.salvarPedido(pedido);
     }
 
     public void atualizarItem(Long id, Long produtoId) {

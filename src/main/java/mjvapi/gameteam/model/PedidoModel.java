@@ -24,7 +24,7 @@ public class PedidoModel {
     @Column(name = "status", nullable = false)
     private StatusPedido status;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "pedido_id")
     private List<ItemModel> itens = new ArrayList<ItemModel>();
 

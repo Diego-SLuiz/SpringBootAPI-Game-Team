@@ -31,13 +31,22 @@ public class UsuarioController {
     }
 
     @PostMapping("/novo")
-    public UsuarioResponseBody novoUsuario(@RequestBody UsuarioRequestBody usuarioRequest) {
-        return usuarioService.novoUsuario(usuarioRequest);
+    public void novoUsuario(@RequestBody UsuarioRequestBody usuarioRequest) {
+        usuarioService.novoUsuario(usuarioRequest);
     }
 
     @PatchMapping("/{id}/atualizar")
-    public UsuarioResponseBody atualizarUsuario(@PathVariable(name = "id") Long id, @RequestBody UsuarioRequestBody usuarioRequest) {
-        return usuarioService.atualizarUsuario(id, usuarioRequest);
+    public void atualizarUsuario(@PathVariable(name = "id") Long id, @RequestBody UsuarioRequestBody usuarioRequest) {
+        usuarioService.atualizarUsuario(id, usuarioRequest);
     }
 
+    @PatchMapping("/{id}/pedidos/adicionar")
+    public void adicionarPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "pedido") Long pedidoId) {
+        usuarioService.adicionarPedido(id, pedidoId);
+    }
+
+    @PatchMapping("/{id}/pedidos/remover")
+    public void removerPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "pedido") Long pedidoId) {
+        usuarioService.removerPedido(id, pedidoId);
+    }
 }

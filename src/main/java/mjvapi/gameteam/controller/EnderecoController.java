@@ -31,13 +31,13 @@ public class EnderecoController {
     }
 
     @PostMapping("/novo")
-    public EnderecoResponseBody novoEndereco(@RequestBody EnderecoRequestBody enderecoRequest) {
-        return enderecoService.novoEndereco(enderecoRequest);
+    public void novoEndereco(@RequestBody EnderecoRequestBody enderecoRequest) {
+        enderecoService.novoEndereco(enderecoRequest);
     }
 
     @PatchMapping("/{id}/atualizar")
-    public EnderecoResponseBody atualizarEndereco(@PathVariable(name = "id") Long id, @RequestBody EnderecoRequestBody enderecoRequest) {
-        return enderecoService.atualizarEndereco(id, enderecoRequest);
+    public void atualizarEndereco(@PathVariable(name = "id") Long id, @RequestBody EnderecoRequestBody enderecoRequest) {
+        enderecoService.atualizarEndereco(id, enderecoRequest);
     }
 
 }

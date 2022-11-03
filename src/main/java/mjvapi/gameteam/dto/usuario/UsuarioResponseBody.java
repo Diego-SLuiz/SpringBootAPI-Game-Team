@@ -1,6 +1,7 @@
 package mjvapi.gameteam.dto.usuario;
 
 import mjvapi.gameteam.dto.endereco.EnderecoResponseBody;
+import mjvapi.gameteam.model.BibliotecaModel;
 import mjvapi.gameteam.model.UsuarioModel;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ public class UsuarioResponseBody {
     private String senha;
     private LocalDate registro;
     private EnderecoResponseBody endereco;
+    private BibliotecaModel biblioteca;
 
     public UsuarioResponseBody() {
 
@@ -23,6 +25,7 @@ public class UsuarioResponseBody {
         email = usuario.getEmail();
         senha = usuario.getSenha();
         registro = usuario.getRegistro();
+        biblioteca = usuario.getBiblioteca();
 
         if (usuario.getEndereco() != null) {
             endereco = new EnderecoResponseBody(usuario.getEndereco());

@@ -29,11 +29,11 @@ public class ItemController {
     }
 
     @PostMapping("/novo")
-    public void novoItem(@RequestParam(name = "produto") Long produtoId, @RequestParam(name = "pedido") Long pedidoId) {
-        itemService.novoItem(produtoId, pedidoId);
+    public void novoItem() {
+        itemService.novoItem();
     }
 
-    @PostMapping("/{id}/atualizar")
+    @PatchMapping("/{id}/atualizar")
     public void atualizarItem(@PathVariable(name = "id") Long id, @RequestParam(name = "produto") Long produtoId) {
         itemService.atualizarItem(id, produtoId);
     }
