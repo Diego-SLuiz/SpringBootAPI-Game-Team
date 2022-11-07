@@ -1,11 +1,22 @@
 package mjvapi.gameteam.dto.usuario;
 
+import mjvapi.gameteam.model.UsuarioModel;
+import mjvapi.gameteam.util.BuscarEnderecoPorCep;
+
 public class UsuarioRequestBody {
     private String nome;
     private String email;
     private String senha;
-    private Long endereco;
-    private Long biblioteca;
+    private String cep;
+
+    public static UsuarioModel converterEmUsuario(UsuarioRequestBody usuarioDto) {
+        UsuarioModel usuario = new UsuarioModel();
+        usuario.setNome(usuarioDto.getNome());
+        usuario.setEmail(usuarioDto.getEmail());
+        usuario.setSenha(usuarioDto.getSenha());
+
+        return usuario;
+    }
 
     public String getNome() {
         return nome;
@@ -31,20 +42,12 @@ public class UsuarioRequestBody {
         this.senha = senha;
     }
 
-    public Long getEndereco() {
-        return endereco;
+    public String getCep() {
+        return cep;
     }
 
-    public void setEndereco(Long endereco) {
-        this.endereco = endereco;
-    }
-
-    public Long getBiblioteca() {
-        return biblioteca;
-    }
-
-    public void setBiblioteca(Long biblioteca) {
-        this.biblioteca = biblioteca;
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
 }

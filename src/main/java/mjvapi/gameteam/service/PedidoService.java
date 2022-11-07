@@ -1,5 +1,6 @@
 package mjvapi.gameteam.service;
 
+import mjvapi.gameteam.dto.pedido.PedidoResponseBody;
 import mjvapi.gameteam.enumeration.StatusPedido;
 import mjvapi.gameteam.model.ItemModel;
 import mjvapi.gameteam.model.PedidoModel;
@@ -22,60 +23,41 @@ public class PedidoService {
     @Autowired
     private ItemService itemService;
 
-    public List<PedidoModel> buscarTodos() {
+    public List<PedidoModel> findAll() {
         return pedidoRepository.findAll();
     }
 
-    public PedidoModel buscarPedido(Long id) {
+    public PedidoModel findById(Long id) {
         return pedidoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
     }
 
-    public void salvarPedido(PedidoModel pedido) {
-        pedidoRepository.save(pedido);
+    public PedidoModel save(PedidoModel pedido) {
+        return pedidoRepository.save(pedido);
     }
 
-    public void deletarPedido(Long id) {
-        pedidoRepository.deleteById(id);
+    public List<PedidoResponseBody> buscarPedidos() {
+        return PedidoResponseBody.converterEmListaDto(findAll());
     }
 
-    public void novoPedido() {
+    public PedidoResponseBody buscarPedido(Long id) {
+        return PedidoResponseBody.converterEmDto(findById(id));
+    }
+
+    public PedidoModel novoPedido() {
         PedidoModel pedido = new PedidoModel();
         pedido.setValor(0.0);
         pedido.setData(LocalDateTime.now());
         pedido.setStatus(StatusPedido.PENDENTE);
-        salvarPedido(pedido);
+
+        return save(pedido);
     }
 
-    public void adicionarItemAoPedido(Long id, Long itemId) {
-        PedidoModel pedido = buscarPedido(id);
-        ItemModel item = itemService.buscarItem(itemId);
-
-        if (pedido.getItens().contains(item)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Item {%s} já existe no Pedido {%s}", itemId, id));
-        }
-
-        pedido.getItens().add(item);
-        pedido.setValor(pedido.getValor() + item.getProduto().getValor());
-        salvarPedido(pedido);
+    public PedidoResponseBody adicionarItemAoPedido(Long id, Long itemId) {
+        return null;
     }
 
-    public void removerItemDoPedido(Long id, Long itemId) {
-        PedidoModel pedido = buscarPedido(id);
-        ItemModel item = itemService.buscarItem(itemId);
-
-        if (!pedido.getItens().contains(item)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Item {%s} não existe no Pedido {%s}", itemId, id));
-        }
-
-        pedido.getItens().remove(item);
-        pedido.setValor(pedido.getValor() - item.getProduto().getValor());
-        salvarPedido(pedido);
-    }
-
-    public void atualizarPedido(Long id, StatusPedido status) {
-        PedidoModel pedido = buscarPedido(id);
-        pedido.setStatus(status);
-        salvarPedido(pedido);
+    public PedidoResponseBody removerItemDoPedido(Long id, Long itemId) {
+        return null;
     }
 
 }

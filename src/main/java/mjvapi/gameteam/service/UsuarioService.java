@@ -1,11 +1,15 @@
 package mjvapi.gameteam.service;
 
+import mjvapi.gameteam.dto.pedido.PedidoResponseBody;
 import mjvapi.gameteam.dto.usuario.UsuarioRequestBody;
+import mjvapi.gameteam.dto.usuario.UsuarioResponseBody;
 import mjvapi.gameteam.model.BibliotecaModel;
 import mjvapi.gameteam.model.EnderecoModel;
 import mjvapi.gameteam.model.PedidoModel;
 import mjvapi.gameteam.model.UsuarioModel;
 import mjvapi.gameteam.repository.UsuarioRepository;
+
+import mjvapi.gameteam.util.BuscarEnderecoPorCep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,50 +32,53 @@ public class UsuarioService {
     @Autowired
     private PedidoService pedidoService;
 
-    public List<UsuarioModel> buscarTodos() {
+    public List<UsuarioModel> findAll() {
         return usuarioRepository.findAll();
     }
 
-    public UsuarioModel buscarUsuario(Long id) {
+    public UsuarioModel findById(Long id) {
         return usuarioRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Usuario {%s} não encontrado", id)));
     }
 
-    public void salvarUsuario(UsuarioModel usuario) {
-        usuarioRepository.save(usuario);
+    public UsuarioModel save(UsuarioModel usuario) {
+        return usuarioRepository.save(usuario);
     }
 
-    public void deletarUsuario(Long id) {
+    public void deleteById(Long id) {
+        usuarioRepository.findById(id);
         usuarioRepository.deleteById(id);
     }
 
-    public void novoUsuario(UsuarioRequestBody usuarioRequest) {
-        UsuarioModel usuario = new UsuarioModel();
-
-        if (usuarioRequest.getNome() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O campo \"nome\" não pode ser nulo");
-        }
-        if (usuarioRequest.getEmail() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O campo \"email\" não pode ser nulo");
-        }
-        if (usuarioRequest.getSenha() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O campo \"senha\" não pode ser nulo");
-        }
-
-        usuario.setNome(usuarioRequest.getNome());
-        usuario.setEmail(usuarioRequest.getEmail());
-        usuario.setSenha(usuarioRequest.getSenha());
-        usuario.setRegistro(LocalDate.now());
-
-        if (usuarioRequest.getEndereco() != null) {
-            EnderecoModel endereco = enderecoService.buscarEndereco(usuarioRequest.getEndereco());
-            usuario.setEndereco(endereco);
-        }
-
-        salvarUsuario(usuario);
+    public List<UsuarioResponseBody> buscarUsuarios() {
+        return UsuarioResponseBody.converterEmListaDto(findAll());
     }
 
-    public void atualizarUsuario(Long id, UsuarioRequestBody usuarioRequest) {
-        UsuarioModel usuario = buscarUsuario(id);
+    public UsuarioResponseBody buscarUsuario(Long id) {
+        return UsuarioResponseBody.converterEmDto(findById(id));
+    }
+
+    public void deletarUsuario(Long id) {
+        deleteById(id);
+    }
+
+    public UsuarioResponseBody novoUsuario(UsuarioRequestBody usuarioRequest) {
+        UsuarioModel usuario = UsuarioRequestBody.converterEmUsuario(usuarioRequest);
+        usuario.setRegistro(LocalDate.now());
+
+        EnderecoModel endereco = enderecoService.novoEndereco(usuarioRequest.getCep());
+        usuario.setEndereco(enderecoService.save(endereco));
+
+        BibliotecaModel biblioteca = bibliotecaService.novaBiblioteca();
+        usuario.setBiblioteca(bibliotecaService.save(biblioteca));
+
+        PedidoModel pedido = pedidoService.novoPedido();
+        usuario.getPedidos().add(pedidoService.save(pedido));
+
+        return UsuarioResponseBody.converterEmDto(save(usuario));
+    }
+
+    public UsuarioResponseBody atualizarUsuario(Long id, UsuarioRequestBody usuarioRequest) {
+        UsuarioModel usuario = findById(id);
 
         if (usuarioRequest.getNome() != null) {
             usuario.setNome(usuarioRequest.getNome());
@@ -82,40 +89,39 @@ public class UsuarioService {
         if (usuarioRequest.getSenha() != null) {
             usuario.setSenha(usuarioRequest.getSenha());
         }
-        if (usuarioRequest.getEndereco() != null) {
-            EnderecoModel endereco = enderecoService.buscarEndereco(usuarioRequest.getEndereco());
+        if (usuarioRequest.getCep() != null) {
+            EnderecoModel endereco = BuscarEnderecoPorCep.buscar(usuarioRequest.getCep());
             usuario.setEndereco(endereco);
         }
-        if (usuarioRequest.getBiblioteca() != null) {
-            BibliotecaModel biblioteca = bibliotecaService.buscarBiblioteca(usuarioRequest.getBiblioteca());
-            usuario.setBiblioteca(biblioteca);
-        }
 
-        salvarUsuario(usuario);
+        return UsuarioResponseBody.converterEmDto(save(usuario));
     }
 
-    public void adicionarPedido(Long id, Long pedidoId) {
-        UsuarioModel usuario = buscarUsuario(id);
-        PedidoModel pedido = pedidoService.buscarPedido(pedidoId);
+    public List<PedidoResponseBody> buscarPedidos(Long id) {
+        UsuarioModel usuario = findById(id);
 
-        if (usuario.getPedidos().contains(pedido)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Pedido {%s} já existe para o Usuario {%s}", pedidoId, id));
-        }
+        return PedidoResponseBody.converterEmListaDto(usuario.getPedidos());
+    }
 
-        usuario.getPedidos().add(pedido);
-        salvarUsuario(usuario);
+    public PedidoResponseBody adicionarPedido(Long id) {
+        UsuarioModel usuario = findById(id);
+
+        PedidoModel pedido = pedidoService.novoPedido();
+        usuario.getPedidos().add(pedidoService.save(pedido));
+
+        return PedidoResponseBody.converterEmDto(pedido);
     }
 
     public void removerPedido(Long id, Long pedidoId) {
-        UsuarioModel usuario = buscarUsuario(id);
-        PedidoModel pedido = pedidoService.buscarPedido(pedidoId);
+        UsuarioModel usuario = findById(id);
+        PedidoModel pedido = pedidoService.findById(pedidoId);
 
         if (!usuario.getPedidos().contains(pedido)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Pedido {%s} não existe para o Usuario {%s}", pedidoId, id));
         }
 
         usuario.getPedidos().remove(pedido);
-        salvarUsuario(usuario);
+        save(usuario);
     }
 
 }

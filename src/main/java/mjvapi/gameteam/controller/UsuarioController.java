@@ -1,8 +1,9 @@
 package mjvapi.gameteam.controller;
 
+import mjvapi.gameteam.dto.pedido.PedidoResponseBody;
 import mjvapi.gameteam.dto.usuario.UsuarioRequestBody;
 import mjvapi.gameteam.dto.usuario.UsuarioResponseBody;
-import mjvapi.gameteam.model.UsuarioModel;
+import mjvapi.gameteam.service.PedidoService;
 import mjvapi.gameteam.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,16 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private PedidoService pedidoService;
+
     @GetMapping("/")
-    public List<UsuarioModel> buscarTodos() {
-        return usuarioService.buscarTodos();
+    public List<UsuarioResponseBody> buscarUsuarios() {
+        return usuarioService.buscarUsuarios();
     }
 
     @GetMapping("/{id}")
-    public UsuarioModel buscarUsuario(@PathVariable(name = "id") Long id) {
+    public UsuarioResponseBody buscarUsuario(@PathVariable(name = "id") Long id) {
         return usuarioService.buscarUsuario(id);
     }
 
@@ -31,22 +35,28 @@ public class UsuarioController {
     }
 
     @PostMapping("/novo")
-    public void novoUsuario(@RequestBody UsuarioRequestBody usuarioRequest) {
-        usuarioService.novoUsuario(usuarioRequest);
+    public UsuarioResponseBody novoUsuario(@RequestBody UsuarioRequestBody usuarioRequest) {
+        return usuarioService.novoUsuario(usuarioRequest);
     }
 
     @PatchMapping("/{id}/atualizar")
-    public void atualizarUsuario(@PathVariable(name = "id") Long id, @RequestBody UsuarioRequestBody usuarioRequest) {
-        usuarioService.atualizarUsuario(id, usuarioRequest);
+    public UsuarioResponseBody atualizarUsuario(@PathVariable(name = "id") Long id, @RequestBody UsuarioRequestBody usuarioRequest) {
+        return usuarioService.atualizarUsuario(id, usuarioRequest);
+    }
+
+    @GetMapping("/{id}/pedidos")
+    public List<PedidoResponseBody> buscarPedidos(@PathVariable(name = "id") Long id) {
+        return usuarioService.buscarPedidos(id);
     }
 
     @PatchMapping("/{id}/pedidos/adicionar")
-    public void adicionarPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "pedido") Long pedidoId) {
-        usuarioService.adicionarPedido(id, pedidoId);
+    public PedidoResponseBody adicionarPedido(@PathVariable(name = "id") Long id) {
+        return usuarioService.adicionarPedido(id);
     }
 
     @PatchMapping("/{id}/pedidos/remover")
     public void removerPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "pedido") Long pedidoId) {
         usuarioService.removerPedido(id, pedidoId);
     }
+
 }

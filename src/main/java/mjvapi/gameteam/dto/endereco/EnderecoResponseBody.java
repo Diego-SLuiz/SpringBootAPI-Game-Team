@@ -2,31 +2,42 @@ package mjvapi.gameteam.dto.endereco;
 
 import mjvapi.gameteam.model.EnderecoModel;
 
+import javax.persistence.Column;
+import java.util.ArrayList;
+import java.util.List;
+
 public class EnderecoResponseBody {
     private Long id;
-    private String pais;
-    private String cidade;
-    private String logradouro;
-    private String bairro;
-    private String complemento;
     private String cep;
-    private String numero;
+    private String logradouro;
+    private String complemento;
+    private String bairro;
+    private String localidade;
     private String uf;
+    private String ddd;
 
-    public EnderecoResponseBody() {
+    public static EnderecoResponseBody converterEmDto(EnderecoModel endereco) {
+        EnderecoResponseBody enderecoDto = new EnderecoResponseBody();
+        enderecoDto.setId(endereco.getId());
+        enderecoDto.setCep(endereco.getCep());
+        enderecoDto.setLogradouro(endereco.getLogradouro());
+        enderecoDto.setComplemento(endereco.getComplemento());
+        enderecoDto.setBairro(endereco.getBairro());
+        enderecoDto.setLocalidade(endereco.getLocalidade());
+        enderecoDto.setUf(endereco.getUf());
+        enderecoDto.setDdd(endereco.getDdd());
 
+        return enderecoDto;
     }
 
-    public EnderecoResponseBody(EnderecoModel endereco) {
-        id = endereco.getId();
-        pais = endereco.getPais();
-        cidade = endereco.getCidade();
-        logradouro = endereco.getLogradouro();
-        bairro = endereco.getBairro();
-        complemento = endereco.getComplemento();
-        cep = endereco.getCep();
-        numero = endereco.getNumero();
-        uf = endereco.getUf();
+    public static List<EnderecoResponseBody> converterEmListaDto(List<EnderecoModel> enderecos) {
+        ArrayList<EnderecoResponseBody> enderecosDto = new ArrayList<EnderecoResponseBody>();
+
+        for (EnderecoModel endereco: enderecos) {
+            enderecosDto.add(EnderecoResponseBody.converterEmDto(endereco));
+        }
+
+        return enderecosDto;
     }
 
     public Long getId() {
@@ -37,20 +48,12 @@ public class EnderecoResponseBody {
         this.id = id;
     }
 
-    public String getPais() {
-        return pais;
+    public String getCep() {
+        return cep;
     }
 
-    public void setPais(String pais) {
-        this.pais = pais;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
     public String getLogradouro() {
@@ -61,14 +64,6 @@ public class EnderecoResponseBody {
         this.logradouro = logradouro;
     }
 
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
     public String getComplemento() {
         return complemento;
     }
@@ -77,20 +72,20 @@ public class EnderecoResponseBody {
         this.complemento = complemento;
     }
 
-    public String getCep() {
-        return cep;
+    public String getBairro() {
+        return bairro;
     }
 
-    public void setCep(String cep) {
-        this.cep = cep;
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
     }
 
-    public String getNumero() {
-        return numero;
+    public String getLocalidade() {
+        return localidade;
     }
 
-    public void setNumero(String numero) {
-        this.numero = numero;
+    public void setLocalidade(String localidade) {
+        this.localidade = localidade;
     }
 
     public String getUf() {
@@ -99,6 +94,14 @@ public class EnderecoResponseBody {
 
     public void setUf(String uf) {
         this.uf = uf;
+    }
+
+    public String getDdd() {
+        return ddd;
+    }
+
+    public void setDdd(String ddd) {
+        this.ddd = ddd;
     }
 
 }

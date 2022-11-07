@@ -1,10 +1,10 @@
 package mjvapi.gameteam.dto.usuario;
 
-import mjvapi.gameteam.dto.endereco.EnderecoResponseBody;
-import mjvapi.gameteam.model.BibliotecaModel;
 import mjvapi.gameteam.model.UsuarioModel;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioResponseBody {
     private Long id;
@@ -12,24 +12,29 @@ public class UsuarioResponseBody {
     private String email;
     private String senha;
     private LocalDate registro;
-    private EnderecoResponseBody endereco;
-    private BibliotecaModel biblioteca;
+    private Long endereco;
+    private Long biblioteca;
 
-    public UsuarioResponseBody() {
+    public static UsuarioResponseBody converterEmDto(UsuarioModel usuario) {
+        UsuarioResponseBody usuarioDto = new UsuarioResponseBody();
+        usuarioDto.setNome(usuario.getNome());
+        usuarioDto.setEmail(usuario.getEmail());
+        usuarioDto.setSenha(usuario.getSenha());
+        usuarioDto.setRegistro(usuario.getRegistro());
+        usuarioDto.setEndereco(usuario.getEndereco().getId());
+        usuarioDto.setBiblioteca(usuario.getBiblioteca().getId());
 
+        return usuarioDto;
     }
 
-    public UsuarioResponseBody(UsuarioModel usuario) {
-        id = usuario.getId();
-        nome = usuario.getNome();
-        email = usuario.getEmail();
-        senha = usuario.getSenha();
-        registro = usuario.getRegistro();
-        biblioteca = usuario.getBiblioteca();
+    public static List<UsuarioResponseBody> converterEmListaDto(List<UsuarioModel> usuarios) {
+        ArrayList<UsuarioResponseBody> usuariosDto = new ArrayList<UsuarioResponseBody>();
 
-        if (usuario.getEndereco() != null) {
-            endereco = new EnderecoResponseBody(usuario.getEndereco());
+        for (UsuarioModel usuario: usuarios) {
+            usuariosDto.add(UsuarioResponseBody.converterEmDto(usuario));
         }
+
+        return usuariosDto;
     }
 
     public Long getId() {
@@ -72,12 +77,20 @@ public class UsuarioResponseBody {
         this.registro = registro;
     }
 
-    public EnderecoResponseBody getEndereco() {
+    public Long getEndereco() {
         return endereco;
     }
 
-    public void setEndereco(EnderecoResponseBody endereco) {
+    public void setEndereco(Long endereco) {
         this.endereco = endereco;
+    }
+
+    public Long getBiblioteca() {
+        return biblioteca;
+    }
+
+    public void setBiblioteca(Long biblioteca) {
+        this.biblioteca = biblioteca;
     }
 
 }

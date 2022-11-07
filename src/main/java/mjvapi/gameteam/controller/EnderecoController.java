@@ -16,28 +16,18 @@ public class EnderecoController {
     private EnderecoService enderecoService;
 
     @GetMapping("/")
-    public List<EnderecoModel> buscarTodos() {
-        return enderecoService.buscarTodos();
+    public List<EnderecoResponseBody> buscarEnderecos() {
+        return enderecoService.buscarEnderecos();
     }
 
     @GetMapping("/{id}")
-    public EnderecoModel buscarEndereco(@PathVariable("id") Long id) {
+    public EnderecoResponseBody buscarEndereco(@PathVariable("id") Long id) {
         return enderecoService.buscarEndereco(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deletarEndereco(@PathVariable(name = "id") Long id) {
-        enderecoService.deletarEndereco(id);
-    }
-
-    @PostMapping("/novo")
-    public void novoEndereco(@RequestBody EnderecoRequestBody enderecoRequest) {
-        enderecoService.novoEndereco(enderecoRequest);
-    }
-
     @PatchMapping("/{id}/atualizar")
-    public void atualizarEndereco(@PathVariable(name = "id") Long id, @RequestBody EnderecoRequestBody enderecoRequest) {
-        enderecoService.atualizarEndereco(id, enderecoRequest);
+    public EnderecoResponseBody atualizarEndereco(@PathVariable(name = "id") Long id, @RequestBody EnderecoRequestBody enderecoRequest) {
+        return enderecoService.atualizarEndereco(id, enderecoRequest);
     }
 
 }

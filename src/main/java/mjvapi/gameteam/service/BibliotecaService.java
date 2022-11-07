@@ -1,5 +1,6 @@
 package mjvapi.gameteam.service;
 
+import mjvapi.gameteam.dto.biblioteca.BibliotecaResponseBody;
 import mjvapi.gameteam.model.BibliotecaModel;
 import mjvapi.gameteam.model.JogoModel;
 import mjvapi.gameteam.model.UsuarioModel;
@@ -19,52 +20,39 @@ public class BibliotecaService {
     @Autowired
     private JogoService jogoService;
 
-    public List<BibliotecaModel> buscarTodos() {
+    public List<BibliotecaModel> findAll() {
         return bibliotecaRepository.findAll();
     }
 
-    public BibliotecaModel buscarBiblioteca(Long id) {
+    public BibliotecaModel findById(Long id) {
         return bibliotecaRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Biblioteca {%s} não encontrada", id)));
     }
 
-    public void salvarBiblioteca(BibliotecaModel biblioteca) {
-        bibliotecaRepository.save(biblioteca);
+    public BibliotecaModel save(BibliotecaModel biblioteca) {
+        return bibliotecaRepository.save(biblioteca);
     }
 
-    public void deletarBiblioteca(Long id) {
-        bibliotecaRepository.deleteById(id);
+    public List<BibliotecaResponseBody> buscarBibliotecas() {
+        return BibliotecaResponseBody.converterEmListaDto(findAll());
     }
 
-    public void novaBiblioteca() {
+    public BibliotecaResponseBody buscarBiblioteca(Long id) {
+        return BibliotecaResponseBody.converterEmDto(findById(id));
+    }
+
+    public BibliotecaModel novaBiblioteca() {
         BibliotecaModel biblioteca = new BibliotecaModel();
         biblioteca.setQuantidadeJogos(0);
-        salvarBiblioteca(biblioteca);
+
+        return save(biblioteca);
     }
 
-    public void adicionarJogoParaBiblioteca(Long id, Long jogoId) {
-        BibliotecaModel biblioteca = buscarBiblioteca(id);
-        JogoModel jogo = jogoService.buscarJogo(jogoId);
-
-        if (biblioteca.getJogos().contains(jogo)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Jogo {%s} já existe na Biblioteca {%s}", jogo.getId(), biblioteca.getId()));
-        }
-
-        biblioteca.getJogos().add(jogo);
-        biblioteca.setQuantidadeJogos(biblioteca.getQuantidadeJogos() + 1);
-        salvarBiblioteca(biblioteca);
+    public BibliotecaResponseBody adicionarJogoParaBiblioteca(Long id, Long jogoId) {
+        return null;
     }
 
-    public void removerJogoDaBiblioteca(Long id, Long jogoId) {
-        BibliotecaModel biblioteca = buscarBiblioteca(id);
-        JogoModel jogo = jogoService.buscarJogo(jogoId);
-
-        if (!biblioteca.getJogos().contains(jogo)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Jogo {%s} não existe na Biblioteca {%s}", jogo.getId(), biblioteca.getId()));
-        }
-
-        biblioteca.getJogos().remove(jogo);
-        biblioteca.setQuantidadeJogos(biblioteca.getQuantidadeJogos() - 1);
-        salvarBiblioteca(biblioteca);
+    public BibliotecaResponseBody removerJogoDaBiblioteca(Long id, Long jogoId) {
+        return null;
     }
 
 }
