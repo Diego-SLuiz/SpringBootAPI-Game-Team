@@ -16,13 +16,13 @@ public class BuscarEnderecoPorCep {
 
         URI uri;
         try {
-            uri = new URI(String.format("viacep.com.br/ws/%s/json/", cep));
+            uri = new URI(String.format("https://viacep.com.br/ws/%s/json/", cep));
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
 
-        HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder().uri(uri).GET().build();
+        HttpClient client = HttpClient.newHttpClient();
         HttpResponse<String> response;
         try {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -33,6 +33,7 @@ public class BuscarEnderecoPorCep {
         }
 
         EnderecoModel endereco = gson.fromJson(response.body(), EnderecoModel.class);
+        endereco.setCep(endereco.getCep().replaceAll("\\D", ""));
         return endereco;
     }
 

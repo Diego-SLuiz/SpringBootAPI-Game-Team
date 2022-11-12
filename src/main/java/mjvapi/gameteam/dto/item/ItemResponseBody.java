@@ -7,11 +7,13 @@ import java.util.List;
 
 public class ItemResponseBody {
     private Long id;
+    private Double valor;
     private Long produto;
 
     public static ItemResponseBody converterEmDto(ItemModel item) {
         ItemResponseBody itemDto = new ItemResponseBody();
         itemDto.setId(item.getId());
+        itemDto.setValor(item.getProduto().getValor());
         itemDto.setProduto(item.getProduto().getId());
 
         return itemDto;
@@ -33,6 +35,14 @@ public class ItemResponseBody {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Double getValor() {
+        return valor;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
     public Long getProduto() {

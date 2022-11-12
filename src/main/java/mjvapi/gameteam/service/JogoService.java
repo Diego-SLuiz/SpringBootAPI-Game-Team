@@ -1,5 +1,7 @@
 package mjvapi.gameteam.service;
 
+import mjvapi.gameteam.dto.jogo.JogoRequestBody;
+import mjvapi.gameteam.dto.jogo.JogoResponseBody;
 import mjvapi.gameteam.model.BibliotecaModel;
 import mjvapi.gameteam.model.JogoModel;
 import mjvapi.gameteam.model.ProdutoModel;
@@ -20,33 +22,48 @@ public class JogoService {
     @Autowired
     private ProdutoService produtoService;
 
-    public List<JogoModel> buscarTodos() {
+    public List<JogoModel> findAll() {
         return jogoRepository.findAll();
     }
 
-    public JogoModel buscarJogo(Long id) {
+    public JogoModel findById(Long id) {
         return jogoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Jogo {%s} não encontrado", id)));
     }
 
-    public void salvarJogo(JogoModel jogo) {
-        jogoRepository.save(jogo);
+    public JogoModel save(JogoModel jogo) {
+        return jogoRepository.save(jogo);
     }
 
-    public void deletarJogo(Long id) {
+    public void deleteById(Long id) {
+        findById(id);
         jogoRepository.deleteById(id);
     }
 
-    public void novoJogo() {
-        JogoModel jogo = new JogoModel();
-        salvarJogo(jogo);
+    public List<JogoResponseBody> buscarJogos() {
+        return JogoResponseBody.converterEmListaDto(findAll());
     }
 
-    public void atualizarJogo(Long id, Long produtoId) {
-        JogoModel jogo = buscarJogo(id);
-        ProdutoModel produto = produtoService.buscarProduto(produtoId);
+    public JogoResponseBody buscarJogo(Long id) {
+        return JogoResponseBody.converterEmDto(findById(id));
+    }
 
+    public JogoModel novoJogo(Long produtoId) {
+        ProdutoModel produto = produtoService.findById(produtoId);
+        JogoModel jogo = new JogoModel();
         jogo.setProduto(produto);
-        salvarJogo(jogo);
+
+        return save(jogo);
+    }
+
+    public JogoResponseBody atualizarJogo(Long id, JogoRequestBody jogoBody) {
+        JogoModel jogo = findById(id);
+
+        if (jogoBody.getProduto() != null) {
+            ProdutoModel produto = produtoService.findById(jogoBody.getProduto());
+            jogo.setProduto(produto);
+        }
+
+        return JogoResponseBody.converterEmDto(jogo);
     }
 
 }

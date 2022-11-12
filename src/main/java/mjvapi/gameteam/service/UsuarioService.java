@@ -103,16 +103,16 @@ public class UsuarioService {
         return PedidoResponseBody.converterEmListaDto(usuario.getPedidos());
     }
 
-    public PedidoResponseBody adicionarPedido(Long id) {
+    public List<PedidoResponseBody> adicionarPedido(Long id) {
         UsuarioModel usuario = findById(id);
-
         PedidoModel pedido = pedidoService.novoPedido();
         usuario.getPedidos().add(pedidoService.save(pedido));
+        save(usuario);
 
-        return PedidoResponseBody.converterEmDto(pedido);
+        return PedidoResponseBody.converterEmListaDto(usuario.getPedidos());
     }
 
-    public void removerPedido(Long id, Long pedidoId) {
+    public List<PedidoResponseBody> removerPedido(Long id, Long pedidoId) {
         UsuarioModel usuario = findById(id);
         PedidoModel pedido = pedidoService.findById(pedidoId);
 
@@ -122,6 +122,8 @@ public class UsuarioService {
 
         usuario.getPedidos().remove(pedido);
         save(usuario);
+
+        return PedidoResponseBody.converterEmListaDto(usuario.getPedidos());
     }
 
 }

@@ -1,5 +1,7 @@
 package mjvapi.gameteam.controller;
 
+import mjvapi.gameteam.dto.jogo.JogoRequestBody;
+import mjvapi.gameteam.dto.jogo.JogoResponseBody;
 import mjvapi.gameteam.model.JogoModel;
 import mjvapi.gameteam.service.JogoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,28 +16,18 @@ public class JogoController {
     private JogoService jogoService;
 
     @GetMapping("/")
-    public List<JogoModel> buscarTodos() {
-        return jogoService.buscarTodos();
+    public List<JogoResponseBody> buscarJogos() {
+        return jogoService.buscarJogos();
     }
 
     @GetMapping("/{id}")
-    public JogoModel buscarJogo(@PathVariable(name = "id") Long id) {
+    public JogoResponseBody buscarJogo(@PathVariable(name = "id") Long id) {
         return jogoService.buscarJogo(id);
     }
 
-    @DeleteMapping("/{id}")
-    public void deletarJogo(@PathVariable(name = "id") Long id) {
-        jogoService.deletarJogo(id);
-    }
-
-    @PostMapping("/novo")
-    public void novoJogo() {
-        jogoService.novoJogo();
-    }
-
     @PatchMapping("/{id}/atualizar")
-    public void atualizarJogo(@PathVariable(name = "id") Long id, @RequestParam(name = "produto") Long produtoId) {
-        jogoService.atualizarJogo(id, produtoId);
+    public JogoResponseBody atualizarJogo(@PathVariable(name = "id") Long id, @RequestBody JogoRequestBody jogoBody) {
+        return jogoService.atualizarJogo(id, jogoBody);
     }
 
 }

@@ -1,5 +1,7 @@
 package mjvapi.gameteam.service;
 
+import mjvapi.gameteam.dto.produto.ProdutoRequestBody;
+import mjvapi.gameteam.dto.produto.ProdutoResponseBody;
 import mjvapi.gameteam.model.ProdutoModel;
 import mjvapi.gameteam.repository.PedidoRepository;
 import mjvapi.gameteam.repository.ProdutoRepository;
@@ -15,28 +17,34 @@ public class ProdutoService {
     @Autowired
     private ProdutoRepository produtoRepository;
 
-    public List<ProdutoModel> buscarTodos() {
+    public List<ProdutoModel> findAll() {
         return produtoRepository.findAll();
     }
 
-    public ProdutoModel buscarProduto(Long id) {
-        return produtoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+    public ProdutoModel findById(Long id) {
+        return produtoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Produto {%s} não encontrado", id)));
     }
 
-    public void salvarProduto(ProdutoModel produto) {
-        produtoRepository.save(produto);
+    public ProdutoModel save(ProdutoModel produto) {
+        return produtoRepository.save(produto);
     }
 
-    public void deletarProduto(Long id) {
-        produtoRepository.deleteById(id);
+    public List<ProdutoResponseBody> buscarProdutos() {
+        return ProdutoResponseBody.converterEmListaDto(findAll());
     }
 
-    public void novoProduto(ProdutoModel produtoBody) {
-        salvarProduto(produtoBody);
+    public ProdutoResponseBody buscarProduto(Long id) {
+        return ProdutoResponseBody.converterEmDto(findById(id));
     }
 
-    public void atualizarProduto(Long id, ProdutoModel produtoBody) {
-        ProdutoModel produto = buscarProduto(id);
+    public ProdutoResponseBody novoProduto(ProdutoRequestBody produtoBody) {
+        ProdutoModel produto = save(ProdutoRequestBody.converterEmProduto(produtoBody));
+
+        return ProdutoResponseBody.converterEmDto(produto);
+    }
+
+    public ProdutoResponseBody atualizarProduto(Long id, ProdutoRequestBody produtoBody) {
+        ProdutoModel produto = findById(id);
 
         if (produtoBody.getNome() != null) {
             produto.setNome(produtoBody.getNome());
@@ -54,7 +62,7 @@ public class ProdutoService {
             produto.setValor(produtoBody.getValor());
         }
 
-        produtoRepository.save(produto);
+        return ProdutoResponseBody.converterEmDto(save(produto));
     }
 
 }

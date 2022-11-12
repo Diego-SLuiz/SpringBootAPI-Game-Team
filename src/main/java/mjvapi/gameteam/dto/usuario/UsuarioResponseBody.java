@@ -17,6 +17,7 @@ public class UsuarioResponseBody {
 
     public static UsuarioResponseBody converterEmDto(UsuarioModel usuario) {
         UsuarioResponseBody usuarioDto = new UsuarioResponseBody();
+        usuarioDto.setId(usuario.getId());
         usuarioDto.setNome(usuario.getNome());
         usuarioDto.setEmail(usuario.getEmail());
         usuarioDto.setSenha(usuario.getSenha());

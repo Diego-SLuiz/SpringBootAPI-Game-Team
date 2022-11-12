@@ -50,13 +50,13 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}/pedidos/adicionar")
-    public PedidoResponseBody adicionarPedido(@PathVariable(name = "id") Long id) {
+    public List<PedidoResponseBody> adicionarPedido(@PathVariable(name = "id") Long id) {
         return usuarioService.adicionarPedido(id);
     }
 
     @PatchMapping("/{id}/pedidos/remover")
-    public void removerPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "pedido") Long pedidoId) {
-        usuarioService.removerPedido(id, pedidoId);
+    public List<PedidoResponseBody> removerPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "pedido") Long pedidoId) {
+        return usuarioService.removerPedido(id, pedidoId);
     }
 
 }

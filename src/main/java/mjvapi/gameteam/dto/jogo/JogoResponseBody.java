@@ -7,11 +7,13 @@ import java.util.List;
 
 public class JogoResponseBody {
     private Long id;
+    private String nome;
     private Long produto;
 
     public static JogoResponseBody converterEmDto(JogoModel jogo) {
         JogoResponseBody jogoDto = new JogoResponseBody();
         jogoDto.setId(jogo.getId());
+        jogoDto.setNome(jogo.getProduto().getNome());
         jogoDto.setProduto(jogo.getProduto().getId());
 
         return jogoDto;
@@ -33,6 +35,14 @@ public class JogoResponseBody {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public Long getProduto() {

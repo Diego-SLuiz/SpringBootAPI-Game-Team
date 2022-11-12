@@ -1,5 +1,9 @@
 package mjvapi.gameteam.service;
 
+import mjvapi.gameteam.dto.item.ItemRequestBody;
+import mjvapi.gameteam.dto.item.ItemResponseBody;
+import mjvapi.gameteam.dto.produto.ProdutoRequestBody;
+import mjvapi.gameteam.dto.produto.ProdutoResponseBody;
 import mjvapi.gameteam.model.ItemModel;
 import mjvapi.gameteam.model.ProdutoModel;
 import mjvapi.gameteam.repository.ItemRepository;
@@ -18,32 +22,48 @@ public class ItemService {
     @Autowired
     private ProdutoService produtoService;
 
-    public List<ItemModel> buscarTodos() {
+    public List<ItemModel> findAll() {
         return itemRepository.findAll();
     }
 
-    public ItemModel buscarItem(Long id) {
-        return itemRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+    public ItemModel findById(Long id) {
+        return itemRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Item {%s} não encontrado", id)));
     }
 
-    public void salvarItem(ItemModel item) {
-        itemRepository.save(item);
+    public ItemModel save(ItemModel item) {
+        return itemRepository.save(item);
     }
 
-    public void deletarItem(Long id) {
+    public void deleteById(Long id) {
+        findById(id);
         itemRepository.deleteById(id);
     }
 
-    public void novoItem() {
-        ItemModel item = new ItemModel();
-        salvarItem(item);
+    public List<ItemResponseBody> buscarItens() {
+        return ItemResponseBody.converterEmListaDto(findAll());
     }
 
-    public void atualizarItem(Long id, Long produtoId) {
-        ProdutoModel produto = produtoService.buscarProduto(produtoId);
-        ItemModel item = buscarItem(id);
+    public ItemResponseBody buscarItem(Long id) {
+        return ItemResponseBody.converterEmDto(findById(id));
+    }
+
+    public ItemModel novoItem(Long produtoId) {
+        ProdutoModel produto = produtoService.findById(produtoId);
+        ItemModel item = new ItemModel();
         item.setProduto(produto);
-        salvarItem(item);
+
+        return save(item);
+    }
+
+    public ItemResponseBody atualizarItem(Long id, ItemRequestBody itemBody) {
+        ItemModel item = findById(id);
+
+        if (itemBody.getProduto() != null) {
+            ProdutoModel produto = produtoService.findById(itemBody.getProduto());
+            item.setProduto(produto);
+        }
+
+        return ItemResponseBody.converterEmDto(save(item));
     }
 
 }

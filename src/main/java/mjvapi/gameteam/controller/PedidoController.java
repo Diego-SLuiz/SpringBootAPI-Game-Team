@@ -26,13 +26,13 @@ public class PedidoController {
     }
 
     @PatchMapping("/{id}/adicionar")
-    public PedidoResponseBody adicionarItemAoPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "item") Long itemId) {
-        return pedidoService.adicionarItemAoPedido(id, itemId);
+    public PedidoResponseBody adicionarItemAoPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "produto") Long produtoId) {
+        return pedidoService.adicionarItemAoPedido(id, produtoId);
     }
 
     @PatchMapping("/{id}/remover")
-    public PedidoResponseBody removerItemDoPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "item") Long itemId) {
-        return pedidoService.removerItemDoPedido(id, itemId);
+    public PedidoResponseBody removerItemDoPedido(@PathVariable(name = "id") Long id, @RequestParam(name = "produto") Long produtoId) {
+        return pedidoService.removerItemDoPedido(id, produtoId);
     }
 
 }

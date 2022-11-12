@@ -18,10 +18,10 @@ public class PedidoResponseBody {
 
     public static PedidoResponseBody converterEmDto(PedidoModel pedido) {
         PedidoResponseBody pedidoDto = new PedidoResponseBody();
-        pedidoDto.setId(pedidoDto.getId());
+        pedidoDto.setId(pedido.getId());
         pedidoDto.setData(pedido.getData());
-        pedidoDto.setValor(pedidoDto.getValor());
-        pedidoDto.setStatus(pedidoDto.getStatus());
+        pedidoDto.setValor(pedido.getValor());
+        pedidoDto.setStatus(pedido.getStatus());
         pedidoDto.setItens(ItemResponseBody.converterEmListaDto(pedido.getItens()));
 
         return pedidoDto;

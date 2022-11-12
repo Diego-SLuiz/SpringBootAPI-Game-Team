@@ -25,12 +25,12 @@ public class BibliotecaController {
     }
 
     @PatchMapping("/{id}/adicionar")
-    public BibliotecaResponseBody adicionarJogoParaBiblioteca(@PathVariable(name = "id") Long id, @RequestParam(name = "jogo") Long jogoId) {
-        return bibliotecaService.adicionarJogoParaBiblioteca(id, jogoId);
+    public BibliotecaResponseBody adicionarJogoParaBiblioteca(@PathVariable(name = "id") Long id, @RequestParam(name = "produto") Long produtoId) {
+        return bibliotecaService.adicionarJogoParaBiblioteca(id, produtoId);
     }
 
     @PatchMapping("/{id}/remover")
-    public BibliotecaResponseBody removerJogoDaBiblioteca(@PathVariable(name = "id") Long id, @RequestParam(name = "jogo") Long jogoId) {
+    public BibliotecaResponseBody removerJogoDaBiblioteca(@PathVariable(name = "id") Long id, @RequestParam(name = "produto") Long jogoId) {
         return bibliotecaService.removerJogoDaBiblioteca(id, jogoId);
     }
 

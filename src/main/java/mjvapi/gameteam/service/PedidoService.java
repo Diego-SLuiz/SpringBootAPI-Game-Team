@@ -4,6 +4,7 @@ import mjvapi.gameteam.dto.pedido.PedidoResponseBody;
 import mjvapi.gameteam.enumeration.StatusPedido;
 import mjvapi.gameteam.model.ItemModel;
 import mjvapi.gameteam.model.PedidoModel;
+import mjvapi.gameteam.model.ProdutoModel;
 import mjvapi.gameteam.model.UsuarioModel;
 import mjvapi.gameteam.repository.ItemRepository;
 import mjvapi.gameteam.repository.PedidoRepository;
@@ -28,7 +29,7 @@ public class PedidoService {
     }
 
     public PedidoModel findById(Long id) {
-        return pedidoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
+        return pedidoRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Pedido {%s} não encontrado", id)));
     }
 
     public PedidoModel save(PedidoModel pedido) {
@@ -52,12 +53,44 @@ public class PedidoService {
         return save(pedido);
     }
 
-    public PedidoResponseBody adicionarItemAoPedido(Long id, Long itemId) {
-        return null;
+    public PedidoResponseBody adicionarItemAoPedido(Long id, Long produtoId) {
+        PedidoModel pedido = findById(id);
+
+        for (ItemModel item: pedido.getItens()) {
+            if (item.getProduto().getId() == produtoId) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Item com Produto {%s} já existe no Pedido {%s}", item.getProduto().getId(), id));
+            }
+        }
+
+        ItemModel item = itemService.novoItem(produtoId);
+        itemService.save(item);
+        pedido.getItens().add(item);
+        pedido.setValor(pedido.getValor() + item.getProduto().getValor());
+
+        return PedidoResponseBody.converterEmDto(save(pedido));
     }
 
-    public PedidoResponseBody removerItemDoPedido(Long id, Long itemId) {
-        return null;
+    public PedidoResponseBody removerItemDoPedido(Long id, Long produtoId) {
+        PedidoModel pedido = findById(id);
+        Long itemId = null;
+
+        for (ItemModel item: pedido.getItens()) {
+            if (item.getProduto().getId() == produtoId) {
+                itemId = item.getId();
+            }
+        }
+
+        if (itemId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, String.format("Item com Produto {%s} não existe no Pedido {%s}", produtoId, id));
+        }
+
+        ItemModel item = itemService.findById(itemId);
+        pedido.getItens().remove(item);
+        pedido.setValor(pedido.getValor() - item.getProduto().getValor());
+        save(pedido);
+        itemService.deleteById(itemId);
+
+        return PedidoResponseBody.converterEmDto(pedido);
     }
 
 }
